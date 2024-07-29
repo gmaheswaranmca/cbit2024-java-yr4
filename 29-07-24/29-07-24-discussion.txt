@@ -1,0 +1,152 @@
+Java, DSA, ADSA, Web Technology, Database 
+
+Problems solving on Java and DSA : Covered.
+
+DSA:
+    Linked List 
+    Stack, Queue 
+    Searching and Sorting 
+ADSA:
+    Tree - BST - AVL - Red-Black Tree 
+    Graph
+    Searching and Sorting  
+
+Qns on Searching 
+    
+
+Searching Algorithms:
+    1. Linear Search
+        sequential list: not sorted 
+        by forward traversal, we will seek search key/target
+        O(N)
+        O(1)
+int lsearch(int[] nums, int key)
+{
+    for(int I = 0; I < nums.length; I++) {
+        if(key == nums[I]) {
+            return I; 
+        }
+    }
+    return -1;
+}
+    2. Binary Search 
+        sequential list: sorted 
+int bsearch(int[] nums, int left, int right, int key)
+{
+    while(left <= right) {
+        int mid = (left + right) / 2;
+        if(key == nums[mid])
+            return mid;
+        else if(key < nums[mid]) {
+            right = mid - 1;
+        }
+        else if(key > num[mid]) {
+            left = mid + 1
+        }
+    }   
+    return -1;
+}    
+
+O(log N)
+3. Ternary Search 
+    sequential list: sorted 
+    divide list into three, then seek the key/target. 
+
+    O(log(base 3) N)
+Sorting
+    1. Selection Sorting 
+    2. Bubble Sorting 
+    3. Insertion Sorting 
+    4. Quick Sort 
+    5. Merge Sort 
+
+
+Sortings:
+selection sort: 
+    principle: selection of every element find the minimal element for the selected element in the next elements 
+    numbers = {30, 50, 100, 80, 10, 90, 20, 60}
+    ascending order 
+    1. select every element : selection  
+        - seek for min element after the selected element : pass 
+        - swap element and min element 
+    complexity
+        space: O(1)
+        time: O(N^2),O(N^2),O(N^2) worst, average, best 
+bubble sort: (optimized bubble sort )
+    principle: adjacent elements comparison
+    numbers = {30, 50, 100, 80, 10, 90, 20, 60}
+    ascending order 
+    1. compare element and its next element (adjacent elements) : pass 
+        if next element is min than element: 
+            swap 
+    2. last element will be sorted              
+        : next time to go for pass, one less element ie last element  
+        : optimization 1
+    3. is there any swap in step 1
+        if there no swap: stop the procedure    : optimization 2
+
+    complexity 
+        space: O(1)
+        time: O(N) for best case - for already sorted data, O(N^2) for average and worst cases  
+insertion sort: 
+    principle: how we do insert an element in the array
+        by right shift the elements from the position till last elements 
+        place the new element in the position 
+    numbers = {30, 50, 100, 80, 10, 90, 20, 60}
+               --  ===========================
+               s           u                        s-sorted u-unsorted 
+    steps:
+        1. divide the list into two sorted and unsorted 
+            initially first element is in sorted list 
+            other than first element are in the unsorted list 
+        2. Find the place for first element of the unsorted list in the sorted list 
+            if you find the place, 
+            insert the first element in that place by "array insertion"
+            
+{30, 50, 100, 80, 10, 90, 20, 60}
+--   ===========================
+     **                           is ther place, no 
+{30, 50, 100, 80, 10, 90, 20, 60}
+-------- ========================
+         ***                      is there place, no 
+{30, 50, 100, 80, 10, 90, 20, 60}
+------------- ==================
+              ***                  is ther place, 80 takes the place of 100 | insert 80 at 100
+{30, 50, 80, 100, 10, 90, 20, 60}
+----------------  ==============
+                  ***              is ther place, 80 takes the place of 30   
+{10, 30, 50, 80, 100, 90, 20, 60}
+--------------------- ==============
+                      ***
+{10, 30, 50, 80, 90, 100, 20, 60}
+------------------------  =====
+                          ***
+{10, 20, 30, 50, 80, 90, 100, 60}
+----------------------------- ===
+                              ***                                            
+{10, 20, 30, 50, 60, 80, 90, 100}
+---------------------------------
+    complexity 
+        space: O(1)
+        time: O(N) for best case - for already sorted data, O(N^2) for average and worst cases 
+
+quick sort: 
+    1. for pivot (picked) element (generally, last element),
+        place the pivot element in way that 
+            before pivot we have lesser elements 
+            after pivot we have greater elements 
+    2. [lesser elements] + [pivot] + [greater elements]
+       [left list] + [pivot] + [right list]
+    3. as we got place for pivot, 
+        now i. do the step 1 and 2 for left list 
+            ii. do the step 1 and 2 for right list 
+
+    finding the pivot place : partitioning 
+        O(N)
+    getting left list and right list and proceed same way to find place further pivots : quick sort 
+        O(log N)
+
+    complexity 
+        space: O(1) if we see only in the program memory
+               O(log N) if we see the all memory. then stack for recursions is O(log N) 
+        time: O(N * log(N)) best, worst, average 
