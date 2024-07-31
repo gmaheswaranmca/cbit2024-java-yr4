@@ -82,80 +82,34 @@ https://leetcode.com/problems/maximum-depth-of-binary-tree/
             breadth-first search (BFS) 
             to traverse the tree and keep track of the maximum depth encountered.
    - **Example:**
-     ```python
-     class Solution:
-         def maxDepth(self, root: TreeNode) -> int:
-             if not root:
-                 return 0
-             left_depth = self.maxDepth(root.left)
-             right_depth = self.maxDepth(root.right)
-             return max(left_depth, right_depth) + 1
-     ```
+
 
 #### **Symmetric Tree (LeetCode 101)**
    https://leetcode.com/problems/symmetric-tree/description/     
    - **Problem:** Check if a binary tree is symmetric around its center.
    - **Solution:** Use a recursive function to check 
         if the left and right subtrees are mirror images of each other.
-   - **Example:**
-     ```python
-     class Solution:
-         def isSymmetric(self, root: TreeNode) -> bool:
-             def is_mirror(left, right):
-                 if not left and not right:
-                     return True
-                 if not left or not right:
-                     return False
-                 return (left.val == right.val) and is_mirror(left.left, right.right) and is_mirror(left.right, right.left)
-             
-             return is_mirror(root, root)
-     ```
+
 
 #### **Invert Binary Tree (LeetCode 226)**
     https://leetcode.com/problems/invert-binary-tree/
    - **Problem:** Invert a binary tree.
    - **Solution:** Swap the left and right children of each node in the tree.
-   - **Example:**
-     ```python
-     class Solution:
-         def invertTree(self, root: TreeNode) -> TreeNode:
-             if root:
-                 root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
-             return root
-     ```
+
 
 #### **Path Sum (LeetCode 112)**
     https://leetcode.com/problems/path-sum/
    - **Problem:** Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.
    - **Solution:** Use DFS to check each path's sum from the root to the leaves.
    - **Example:**
-     ```python
-     class Solution:
-         def hasPathSum(self, root: TreeNode, sum: int) -> bool:
-             if not root:
-                 return False
-             if not root.left and not root.right:
-                 return root.val == sum
-             sum -= root.val
-             return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)
-     ```
+
 
 #### **Same Tree (LeetCode 100)**
     https://leetcode.com/problems/same-tree/
    - **Problem:** Given two binary trees, write a function to check if they are the same or not.
    - **Solution:** Compare each node in both trees to see if they have the same structure and values.
    - **Example:**
-     ```python
-     class Solution:
-         def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
-             if not p and not q:
-                 return True
-             if not p or not q:
-                 return False
-             if p.val != q.val:
-                 return False
-             return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
-     ```
+
 
 
 
