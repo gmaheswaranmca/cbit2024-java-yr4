@@ -72,7 +72,6 @@ LeetCode - Binary Tree questions:
 4. Level Order Traversal
 **Problem:** [Binary Tree Level Order Traversal]
 (https://leetcode.com/problems/binary-tree-level-order-traversal/)
-(https://www.codechef.com/problems/BINTREE)
 
 
 #### **Maximum Depth of Binary Tree (LeetCode 104)**

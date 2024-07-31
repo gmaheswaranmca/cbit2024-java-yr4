@@ -16,9 +16,8 @@ class Searching {
   {
       System.out.printf("@2[%d,%d]",left,right);
       if (left <= right) {
-        int oneThird = (left + right) / 3;
-        int mid1 = left + oneThird;
-        int mid2 = right - oneThird;
+        int mid1 = left + ((right - left) / 3);
+        int mid2 = right - ((right - left) / 3);
         
         if(mid1 > mid2){ return -1; }
         System.out.printf("[%d,%d]",mid1,mid2);
