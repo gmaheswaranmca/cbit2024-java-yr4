@@ -1,0 +1,523 @@
+Red-Black Trees are a type of self-balancing binary search tree. 
+Insertion in a Red-Black Tree is more complex than 
+in an AVL tree because 
+it requires maintaining specific properties 
+that ensure the tree remains balanced.
+
+Here are the properties of a Red-Black Tree:
+1. Each node is either red or black.
+2. The root is always black.
+3. All leaves (NIL nodes) are black.
+4. Red nodes cannot have red children (no two red nodes can be adjacent).
+5. Every path from a given node to its descendant 
+NIL nodes has the same number of black nodes.
+
+
+--- Balance Maintainance ---
+rotation:
+
+Left Rotation:
+```
+  p                               p                          
+  |                               |
+  x                               y
+ /  \                           /   \
+T1    y    --->                x     T3
+     / \                      /  \
+    T2  T3                   T1   T2
+```
+
+Right Rotation:
+```
+    p                           p                          
+    |                           |
+    y                           x
+   / \                        /   \
+  x   T3    --->            T1     y
+ / \                              / \
+T1  T2                           T2  T3
+```
+Left Right Rotation:
+```
+  z
+ /    
+y 
+ \          
+  x 
+left rotate on y-x
+    z 
+   /
+  x
+ /
+y    
+then right rotate on z-x
+  x
+ / \
+y   z
+```
+
+Right Left Rotation:
+```
+  z                            
+ /  \                          
+T1   y                  
+     / \                
+    x   T3              
+   / \                  
+  T2  T4                
+
+Right Rotate on y-x
+    result ->  
+        z
+         \
+          x
+           \
+            y
+The Left Rotate on z-x
+    result 
+        z
+       / \
+      x   y
+```
+Insertion:
+newly inserted node is always RED.
+If it violates RED-BLACK tree props, do 1. recolor 2. rotation 
+
+Algo:
+1. **Create a New Node**:
+2. **Find the Correct Position**:
+3. **Insert the New Node**:
+4. **Handle Special Cases**:
+- If the new node has no parent 
+    (it is the root), 
+    it is colored black, 
+    and the function returns.
+- If the new node's grandparent is `None` 
+    (meaning the new node's parent is 
+    the root), the function returns 
+    because the tree is still valid.
+5. **Fix Violations**:
+The `fix_insert` function is called 
+to ensure the Red-Black Tree properties are maintained 
+after insertion. 
+
+fix-insert:
+
+1. **Recoloring and Rotations**:
+   - If the parent of the newly inserted node is red, 
+   there are two cases to consider 
+   based on the color of the uncle (the sibling of the parent).
+
+2. **Case 1: Uncle is Red**:
+   - Recolor the parent, uncle, and grandparent.
+   - Move the focus up to the grandparent and 
+     continue checking.
+
+3. **Case 2: Uncle is Black**:
+   - If the new node is on the opposite side of the parent 
+     (left-right or right-left situation), 
+     perform a rotation to align them.
+   - Perform another rotation on the grandparent 
+     to balance the tree and recolor appropriately.
+
+4. **Ensure Root is Black**:
+   - After fixing, ensure the root remains black.
+
+
+### Insert Operation
+When inserting a new node into a Red-Black Tree, the goal is to maintain these properties. Here's the step-by-step process:
+
+1. **Standard BST Insertion**: Insert the new node as you would in a binary search tree (BST). Initially, color the new node red.
+
+2. **Fix Violations**: Fix any violations of the Red-Black Tree properties that may occur after insertion.
+
+#### Insert Fix-Up Cases
+There are three main cases to handle during the fix-up process. These cases assume the new node `k` is red, its parent is `p`, and the grandparent is `g`.
+
+1. **Case 1: Uncle is Red**
+    - **Violation**: If the uncle `u` (the sibling of `p`) is red.
+    - **Action**: Recolor the parent `p` and uncle `u` to black, and the grandparent `g` to red. Move the focus to the grandparent and continue fixing up from there.
+
+2. **Case 2: Node is a Left Child**
+    - **Violation**: If the parent `p` is red and `k` is the left child of `p`.
+    - **Action**: Perform a right rotation on `p`. This converts the scenario to Case 3.
+
+3. **Case 3: Node is a Right Child**
+    - **Violation**: If the parent `p` is red and `k` is the right child of `p`.
+    - **Action**: Recolor the parent `p` to black and the grandparent `g` to red. Perform a left rotation on `g`.
+
+### Example of Insert Operation
+Let's insert nodes into an initially empty Red-Black Tree: [20, 15, 25, 10, 5, 1].
+
+1. **Insert 20**: 
+    - 20 becomes the root and is colored black.
+
+2. **Insert 15**:
+    - 15 is inserted as the left child of 20 and is colored red. No fix-up needed as the tree properties hold.
+
+3. **Insert 25**:
+    - 25 is inserted as the right child of 20 and is colored red. No fix-up needed as the tree properties hold.
+
+4. **Insert 10**:
+    - 10 is inserted as the left child of 15 and is colored red. No fix-up needed as the tree properties hold.
+
+5. **Insert 5**:
+    - 5 is inserted as the left child of 10 and is colored red. Violation occurs as 10 (parent) and 5 (new node) are both red.
+    - Fix-up Case 1: Uncle (25) is red. Recolor 10 and 25 to black, and 20 to red.
+
+6. **Insert 1**:
+    - 1 is inserted as the left child of 5 and is colored red. Violation occurs as 5 (parent) and 1 (new node) are both red.
+    - Fix-up Case 2: Node (1) is the left child of 5. Right rotate 5.
+    - Fix-up Case 3: Node (5) is now the right child of 10. Recolor 10 to black and 20 to red. Left rotate 20.
+
+### Delete Operation
+Deleting a node from a Red-Black Tree is more complex because it involves fixing up the tree to maintain its properties. Here's the step-by-step process:
+
+1. **Standard BST Deletion**: Remove the node as you would in a binary search tree. If the node has two children, replace it with its in-order successor or predecessor.
+
+2. **Fix Violations**: Fix any violations that occur after the deletion.
+
+#### Delete Fix-Up Cases
+There are several cases to handle during the fix-up process. These cases assume the deleted node's replacement `x` is black.
+
+1. **Case 1: Sibling is Red**
+    - **Violation**: If the sibling `w` of `x` is red.
+    - **Action**: Recolor `w` to black and `x`'s parent `p` to red. Perform a left rotation on `p`. Continue to Case 2.
+
+2. **Case 2: Sibling's Children are Black**
+    - **Violation**: If `w` and both of `w`'s children are black.
+    - **Action**: Recolor `w` to red. Move the focus to `p` and continue fixing up from there.
+
+3. **Case 3: Sibling's Right Child is Black, Left Child is Red**
+    - **Violation**: If `w` is black, `w`'s right child is black, and `w`'s left child is red.
+    - **Action**: Recolor `w` to red and `w`'s left child to black. Perform a right rotation on `w`. Continue to Case 4.
+
+4. **Case 4: Sibling's Right Child is Red**
+    - **Violation**: If `w` is black and `w`'s right child is red.
+    - **Action**: Recolor `w` to `p`'s color, `p` to black, and `w`'s right child to black. Perform a left rotation on `p`. Terminate as the tree is fixed.
+
+### Example of Delete Operation
+Let's delete nodes from the previous Red-Black Tree: [10, 20].
+
+1. **Delete 10**:
+    - 10 has one child (5). Replace 10 with 5. 5 becomes black if it wasn't already.
+
+2. **Delete 20**:
+    - 20 has two children. Find the in-order successor (25). Replace 20 with 25. Delete 25, which has at most one child (NIL).
+
+By maintaining the Red-Black properties through these fix-up steps, the tree remains balanced and efficient for operations like search, insert, and delete.
+
+
+
+what is rb_transplant?
+The `rb_transplant` method is a helper function used in the deletion process of a Red-Black Tree. It replaces one subtree as a child of its parent with another subtree. This method is similar to the `transplant` function used in standard Binary Search Tree (BST) deletion algorithms.
+
+### Purpose of `rb_transplant`
+The purpose of the `rb_transplant` method is to handle the re-linking of nodes when a node is deleted. It ensures that the tree structure is maintained correctly by linking the parent of one node to another node.
+
+### How `rb_transplant` Works
+When deleting a node, you need to replace it with another node. The `rb_transplant` method performs this replacement. Here's the step-by-step process:
+
+1. **Identify Nodes**:
+   - `u`: The node to be replaced.
+   - `v`: The node that will replace `u`.
+
+2. **Update Parent Pointers**:
+   - If `u` is the root, update the root to be `v`.
+   - If `u` is the left child of its parent, update the parent's left child to be `v`.
+   - If `u` is the right child of its parent, update the parent's right child to be `v`.
+
+3. **Update Child Pointers**:
+   - Set the parent of `v` to be the parent of `u`.
+
+
+### Explanation of `delete_node` using `rb_transplant`
+1. **Node with One Child**:
+   - If `z` has only one child, replace `z` with its child using `rb_transplant`.
+
+2. **Node with Two Children**:
+   - Find the in-order successor `y` of `z`.
+   - Replace `y` with its right child `x` using `rb_transplant`.
+   - Replace `z` with `y` using `rb_transplant`.
+   - Update the left and right children of `y` to be those of `z`.
+
+3. **Fixing Violations**:
+   - If the original color of `y` was black, call `fix_delete` to restore Red-Black properties.
+
+The `rb_transplant` method simplifies the deletion process by handling the re-linking of nodes, making the deletion code more readable and maintainable.
+
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.color = "RED"  # New nodes are always red
+        self.left = None
+        self.right = None
+        self.parent = None
+
+class RedBlackTree:
+    def __init__(self):
+        self.NIL = Node(0)
+        self.NIL.color = "BLACK"
+        self.root = self.NIL
+
+    def insert(self, key):
+        new_node = Node(key)
+        new_node.left = self.NIL
+        new_node.right = self.NIL
+        new_node.parent = None
+
+        parent = None
+        current = self.root
+
+        while current != self.NIL:
+            parent = current
+            if new_node.data < current.data:
+                current = current.left
+            else:
+                current = current.right
+
+        new_node.parent = parent
+
+        if parent is None:
+            self.root = new_node
+        elif new_node.data < parent.data:
+            parent.left = new_node
+        else:
+            parent.right = new_node
+
+        if new_node.parent is None:
+            new_node.color = "BLACK"
+            return
+
+        if new_node.parent.parent is None:
+            return
+
+        self.fix_insert(new_node)
+
+    def fix_insert(self, k):
+        while k.parent.color == "RED":
+            if k.parent == k.parent.parent.right:
+                u = k.parent.parent.left  # uncle
+                if u.color == "RED": # Case 1: Uncle is red
+                    u.color = "BLACK"
+                    k.parent.color = "BLACK"
+                    k.parent.parent.color = "RED"
+                    k = k.parent.parent
+                else:
+                    if k == k.parent.left: # Case 2: Node is a left child
+                        k = k.parent
+                        self.right_rotate(k)
+                    # Case 3: Node is a right child
+                    k.parent.color = "BLACK"
+                    k.parent.parent.color = "RED"
+                    self.left_rotate(k.parent.parent)
+            else:
+                u = k.parent.parent.right  # uncle
+                if u.color == "RED": # Case 1: Uncle is red
+                    u.color = "BLACK"
+                    k.parent.color = "BLACK"
+                    k.parent.parent.color = "RED"
+                    k = k.parent.parent
+                else:
+                    if k == k.parent.right:# Case 2: Node is a right child
+                        k = k.parent
+                        self.left_rotate(k)
+                    # Case 3: Node is a left child
+                    k.parent.color = "BLACK"
+                    k.parent.parent.color = "RED"
+                    self.right_rotate(k.parent.parent)
+            if k == self.root:
+                break
+        self.root.color = "BLACK"
+
+    def left_rotate(self, x):
+        y = x.right
+        x.right = y.left
+        if y.left != self.NIL:
+            y.left.parent = x
+
+        y.parent = x.parent
+        if x.parent is None:
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+        y.left = x
+        x.parent = y
+
+    def right_rotate(self, x):
+        y = x.left
+        x.left = y.right
+        if y.right != self.NIL:
+            y.right.parent = x
+
+        y.parent = x.parent
+        if x.parent is None:
+            self.root = y
+        elif x == x.parent.right:
+            x.parent.right = y
+        else:
+            x.parent.left = y
+        y.right = x
+        x.parent = y
+
+    def delete(self, key):
+        node = self.search(self.root, key)
+        if node == self.NIL:
+            return
+
+        self.delete_node(node)
+
+    def delete_node(self, z):
+        y = z
+        y_original_color = y.color
+        if z.left == self.NIL:
+            x = z.right
+            self.rb_transplant(z, z.right)
+        elif z.right == self.NIL:
+            x = z.left
+            self.rb_transplant(z, z.left)
+        else:
+            y = self.minimum(z.right)
+            y_original_color = y.color
+            x = y.right
+            if y.parent == z:
+                x.parent = y
+            else:
+                self.rb_transplant(y, y.right)
+                y.right = z.right
+                y.right.parent = y
+
+            self.rb_transplant(z, y)
+            y.left = z.left
+            y.left.parent = y
+            y.color = z.color
+
+        if y_original_color == "BLACK":
+            self.fix_delete(x)
+
+    def fix_delete(self, x):
+        while x != self.root and x.color == "BLACK":
+            if x == x.parent.left:
+                w = x.parent.right
+                if w.color == "RED":
+                    w.color = "BLACK"
+                    x.parent.color = "RED"
+                    self.left_rotate(x.parent)
+                    w = x.parent.right
+
+                if w.left.color == "BLACK" and w.right.color == "BLACK":
+                    w.color = "RED"
+                    x = x.parent
+                else:
+                    if w.right.color == "BLACK":
+                        w.left.color = "BLACK"
+                        w.color = "RED"
+                        self.right_rotate(w)
+                        w = x.parent.right
+
+                    w.color = x.parent.color
+                    x.parent.color = "BLACK"
+                    w.right.color = "BLACK"
+                    self.left_rotate(x.parent)
+                    x = self.root
+            else:
+                w = x.parent.left
+                if w.color == "RED":
+                    w.color = "BLACK"
+                    x.parent.color = "RED"
+                    self.right_rotate(x.parent)
+                    w = x.parent.left
+
+                if w.left.color == "BLACK" and w.right.color == "BLACK":
+                    w.color = "RED"
+                    x = x.parent
+                else:
+                    if w.left.color == "BLACK":
+                        w.right.color = "BLACK"
+                        w.color = "RED"
+                        self.left_rotate(w)
+                        w = x.parent.left
+
+                    w.color = x.parent.color
+                    x.parent.color = "BLACK"
+                    w.left.color = "BLACK"
+                    self.right_rotate(x.parent)
+                    x = self.root
+        x.color = "BLACK"
+
+    def rb_transplant(self, u, v):
+        if u.parent == None:
+            self.root = v
+        elif u == u.parent.left:
+            u.parent.left = v
+        else:
+            u.parent.right = v
+        v.parent = u.parent
+
+    def search(self, node, key):
+        if node == self.NIL or key == node.data:
+            return node
+
+        if key < node.data:
+            return self.search(node.left, key)
+
+        return self.search(node.right, key)
+
+    def minimum(self, node):
+        while node.left != self.NIL:
+            node = node.left
+        return node
+    
+    def inorder_traversal(self, node):
+        if node != self.NIL:
+            self.inorder_traversal(node.left)
+            if node.data != 0:  # Ignoring the sentinel NIL node
+                print(f"{node.data} ({node.color})", end=" ")
+            self.inorder_traversal(node.right)
+    def print_tree(self, node, indent="", last='updown'):
+        if node != self.NIL:
+            print(f"{indent}<{'R' if node.color == 'RED' else 'B'}-{node.data}>")
+            indent += "   " if last == 'updown' else "|  "
+            self.print_tree(node.left, indent, 'up')
+            self.print_tree(node.right, indent, 'down')
+# Driver code to test the implementation
+if __name__ == "__main__":
+    rbt = RedBlackTree()
+
+    # Insert nodes
+    rbt.insert(20)
+    rbt.insert(15)
+    rbt.insert(25)
+    rbt.insert(10)
+    rbt.insert(5)
+    rbt.insert(1)
+
+    # Test delete operation
+    print("Before deletion:")
+    rbt.inorder_traversal(rbt.root)
+    
+    print('Tree')
+    rbt.print_tree(rbt.root)
+    print() 
+
+    rbt.delete(10)
+
+    print("\nAfter deletion of 10:")
+    rbt.inorder_traversal(rbt.root)
+    
+    print('Tree')
+    rbt.print_tree(rbt.root)
+    print() 
+    
+    rbt.delete(20)
+
+    print("\nAfter deletion of 20:")
+    rbt.inorder_traversal(rbt.root)
+    
+    print('Tree')
+    rbt.print_tree(rbt.root)
+    print() 
+    
